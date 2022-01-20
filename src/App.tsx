@@ -11,7 +11,7 @@ function App() {
     async function getPosts(): Promise<void> {
       try {
         await api
-          .get(`inshortsapi.vercel.app/news?category=${category}`)
+          .get(`news?category=${category}`)
           .then((res) => {
             setPosts(res.data.data);
           });
@@ -26,7 +26,7 @@ function App() {
   //   console.log(posts);
   return (
     <div style={{ margin: 20 }}>
-      <text style={{ marginLeft: 20 }}>Categoria: </text>
+      <text style={{ marginLeft: 20, fontSize: 18}}>Categoria: </text>
       <Select value={category} onChange={handleChange}>
         <MenuItem defaultChecked value="all">Tudo</MenuItem>
         <MenuItem value="national">Nacional</MenuItem>
