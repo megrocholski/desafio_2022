@@ -1,24 +1,63 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import "./App.css";
+import Card from "./components/Card";
+import { api } from "./services/api";
 
 function App() {
+  const [category, setCategory] = useState("all");
+  const [posts, setPosts] = useState<Post[]>([]);
+  useEffect(() => {
+    async function getPosts(): Promise<void> {
+      try {
+        await api
+          .get(`inshortsapi.vercel.app/news?category=${category}`)
+          .then((res) => {
+            setPosts(res.data.data);
+          });
+      } catch (error) {}
+    }
+    getPosts();
+  }, [category]);
+  const handleChange = (event: SelectChangeEvent) => {
+	setCategory(event.target.value as string);
+  }
+  // const posts = await api.get(`${category}`);
+  //   console.log(posts);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ margin: 20 }}>
+      <text style={{ marginLeft: 20 }}>Categoria: </text>
+      <Select value={category} onChange={handleChange}>
+        <MenuItem defaultChecked value="all">Tudo</MenuItem>
+        <MenuItem value="national">Nacional</MenuItem>
+        <MenuItem value="business">Negócios</MenuItem>
+        <MenuItem value="sports">Esportes</MenuItem>
+        <MenuItem value="world">Mundo</MenuItem>
+        <MenuItem value="politics">Política</MenuItem>
+        <MenuItem value="technology">Tecnologia</MenuItem>
+        <MenuItem value="startup">Startup</MenuItem>
+        <MenuItem value="entertainment">Entretenimento</MenuItem>
+        <MenuItem value="miscellaneous">Diversos</MenuItem>
+        <MenuItem value="hatke">Hakte</MenuItem>
+        <MenuItem value="science">Ciência</MenuItem>
+        <MenuItem value="automobile">Automóvel</MenuItem>
+      </Select>
+      <div>
+        {posts?.map((post) => (
+          <Card
+            author={post.author}
+            content={post.content}
+            id={post.id}
+            title={post.title}
+            key={post.id}
+            date={post.date}
+            imageUrl={post.imageUrl}
+            readMoreUrl={post.readMoreUrl}
+            time={post.time}
+            url={post.url}
+          />
+        ))}
+      </div>
     </div>
   );
 }
